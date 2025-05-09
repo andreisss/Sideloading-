@@ -31,8 +31,3 @@ This technique abuses DLL search order hijacking by planting a **malicious `well
   - Bypass certain endpoint defenses.
   - Aid in defense evasion and persistence.
   - Be used in **living-off-the-land (LotL)** scenarios.
-
----
-
-> 💡 **Tip:** Combine with AMSI or ETW bypasses for stealthier operations.
-```
