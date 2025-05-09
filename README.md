@@ -1,8 +1,5 @@
 # Sideloading-well_known_domains.dll  Microsoft Edge.
 
-# DLL Search Order Hijacking in Microsoft Edge  
-**Red Team Technique: Executing Arbitrary Code via Trusted Binary**
-
 This technique abuses DLL search order hijacking by planting a **malicious `well_known_domains.dll`** in a **user-writable directory** that is later loaded by a **trusted Microsoft-signed binary**—specifically, **Microsoft Edge**.
 
 ---
