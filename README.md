@@ -1,17 +1,41 @@
 # Sideloading-well_known_domains.dll  Microsoft Edge.
 
-This technique leverages DLL search order hijacking by placing a malicious well_known_domains.dll in a user-writable directory that is loaded by a trusted Microsoft-signed binary—specifically, Microsoft Edge.
+# DLL Search Order Hijacking in Microsoft Edge  
+**Red Team Technique: Executing Arbitrary Code via Trusted Binary**
 
-Steps to Reproduce:
+This technique abuses DLL search order hijacking by planting a **malicious `well_known_domains.dll`** in a **user-writable directory** that is later loaded by a **trusted Microsoft-signed binary**—specifically, **Microsoft Edge**.
 
-Copy the malicious well_known_domains.dll to:
+---
 
-C:\Users\USERNAME\AppData\Local\Microsoft\Edge\User Data\Well Known Domains\1.x.x.x
+## 🔧 Steps to Reproduce
 
-Launch or close Microsoft Edge. The browser will attempt to load the DLL from this path, executing the payload.
+1. Copy your malicious DLL to the following path:
+   ```
+   C:\Users\<USERNAME>\AppData\Local\Microsoft\Edge\User Data\Well Known Domains\1.x.x.x
+   ```
 
-Technical Details:
+2. **Launch or close Microsoft Edge.**  
+   This action triggers the vulnerable DLL load, causing the payload to execute.
 
-The folder C:\Users\USERNAME\AppData\Local\Microsoft\Edge\User Data\Well Known Domains\1.2.0.0 is user-writable.
-Microsoft Edge implicitly trusts and loads the well_known_domains.dll from this location without validating its integrity or source.
-This enables execution of arbitrary code under the context of a trusted Microsoft binary, which may aid in evading application control or endpoint defenses.
+---
+
+## 🧠 Technical Details
+
+- The target directory is **user-writable**:
+  ```
+  C:\Users\<USERNAME>\AppData\Local\Microsoft\Edge\User Data\Well Known Domains\1.2.0.0
+  ```
+
+- **Edge will load `well_known_domains.dll` from this location**, trusting it implicitly.
+
+- No integrity or signature validation is performed on the DLL.
+
+- This results in **arbitrary code execution** within the context of a **trusted Microsoft process**, which can:
+  - Bypass certain endpoint defenses.
+  - Aid in defense evasion and persistence.
+  - Be used in **living-off-the-land (LotL)** scenarios.
+
+---
+
+> 💡 **Tip:** Combine with AMSI or ETW bypasses for stealthier operations.
+```
